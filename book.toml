@@ -6,4 +6,4 @@ src = "md"
 title = "Metaprogramming in Lean 4 日本語訳"
 
 [output.html]
-git-repository-url = "https://github.com/lean-ja/lean4-metaprogramming-book-ja"
+git-repository-url = "https://github.com/s-taiga/metaprogramming_in_lean4_ja"
