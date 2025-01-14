@@ -99,7 +99,7 @@ let goal_type ← goal.getType
 
 --#--
   この `ldecl` は例えば、`let ldecl ← Lean.MonadLCtx.getLCtx` などで取得されます。
-* 2つの式が定義上等しいかどうかのチェック：`Lean.Meta.isDefEq ex1 ex2`、ここで `ex1 ex2 : Lean.Expr` がコンテキストにあるとします。これは `Lean.MetaM Bool` を返します。
+* 2つの式が definitionally equal かどうかのチェック：`Lean.Meta.isDefEq ex1 ex2`、ここで `ex1 ex2 : Lean.Expr` がコンテキストにあるとします。これは `Lean.MetaM Bool` を返します。
 * ゴールを閉じる：`Lean.Elab.Tactic.closeMainGoal expr`、ここで `expr : Lean.Expr` がコンテキストにあるとします。
 
 --#--
