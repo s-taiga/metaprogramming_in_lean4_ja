@@ -9,7 +9,6 @@
 | concrete syntax tree | 解析木 |
 | context | コンテキスト（証明やプログラム中のスコープを指す場合）、文脈（それ以外） |
 | delaboration | デラボレーション |
-| definitionally equal | 定義上等しい |
 | elaborate | 精緻化 |
 | elaboration | エラボレーション |
 | elaborator | エラボレータ |
@@ -46,6 +45,7 @@
 
 | 用語 |
 | --- |
+| definitionally equal |
 | loose |
 | parenthesizer |
 | syntax quotation |

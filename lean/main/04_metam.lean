@@ -329,7 +329,7 @@ the target type of `mvarId` and (b) that `val` must only contain fvars from the
 local context of `mvarId`.
 
 --#--
-この関数は `MetavarContext` を割当 `?mvarId := val` で更新します。ここでこの `mvarId` が割り当てられていないことを確認しなければなりません（もしくは古い割当と新しい割当が定義上等しいことを確認する必要があります）。また、割り当てられた値 `val` が正しい型であることも確認しなければいけません。これは、(a) `val` が `mvarId` のターゲットの型を持たなければならないこと、(b) `val` が `mvarId` のローカルコンテキストの fvar しか含まなければならないことを意味します。
+この関数は `MetavarContext` を割当 `?mvarId := val` で更新します。ここでこの `mvarId` が割り当てられていないことを確認しなければなりません（もしくは古い割当と新しい割当が definitionally equal ことを確認する必要があります）。また、割り当てられた値 `val` が正しい型であることも確認しなければいけません。これは、(a) `val` が `mvarId` のターゲットの型を持たなければならないこと、(b) `val` が `mvarId` のローカルコンテキストの fvar しか含まなければならないことを意味します。
 
 --#--
 If you `#check Lean.MVarId.assign`, you will see that its real type is more
@@ -644,7 +644,7 @@ def myAssumption (mvarId : MVarId) : MetaM Bool := do
       -- If the type of the hypothesis is definitionally equal to the target
       -- type:
       --#--
-      -- もしこの仮定の型がターゲットの型と定義上等しい場合：
+      -- もしこの仮定の型がターゲットの型と definitionally equal 場合：
       if ← isDefEq ldecl.type target then
         --#--
         -- Use the local hypothesis to prove the goal.
@@ -680,7 +680,7 @@ The `myAssumption` tactic contains three functions we have not seen before:
 
 --#--
 - `Lean.MVarId.checkNotAssigned` はメタ変数がすでに割当済みかどうかチェックします。上記で渡している「myAssumption」引数は現在のタクティクの名前です。これはより良いエラーメッセージを生成するために使用されます。
-- `Lean.Meta.isDefEq` は2つの定義が定義上等しいかどうかをチェックします。詳細は [定義上の等しさの節](#定義上の等しさ) を参照してください。
+- `Lean.Meta.isDefEq` は2つの定義が definitionally equal かどうかをチェックします。詳細は [定義上の等しさの節](#定義上の等しさ) を参照してください。
 - `Lean.LocalDecl.toExpr` はローカルの仮定に対応する `fvar` 式を構築する補助関数です。
 
 --#--
@@ -794,7 +794,7 @@ write our tactics, we must do additional work to ensure that definitionally
 equal terms are treated similarly.
 
 --#--
-計算は依存型理論の核となる概念です。項 `2`・`Nat.succ 1`・`1 + 1` はすべて同じ値を計算するという意味で「同じ」です。これは **定義上等しい** （definitionally equal）と呼ばれます。メタプログラミングの観点からすると、これには定義上等しい項が全く異なる式で表現される可能性があるという問題が付随します。しかし、ユーザは通常、`2` に対して機能するタクティクは `1 + 1` に対しても機能することを期待するでしょう。そのため、タクティクを書くときには、定義上等しい項が同様に扱われるようにするための追加作業をしなければなりません。
+計算は依存型理論の核となる概念です。項 `2`・`Nat.succ 1`・`1 + 1` はすべて同じ値を計算するという意味で「同じ」です。これは *definitionally equal* と呼ばれます。メタプログラミングの観点からすると、これには definitionally equal 項が全く異なる式で表現される可能性があるという問題が付随します。しかし、ユーザは通常、`2` に対して機能するタクティクは `1 + 1` に対しても機能することを期待するでしょう。そのため、タクティクを書くときには、 definitionally equal 項が同様に扱われるようにするための追加作業をしなければなりません。
 
 --#--
 ### Full Normalisation
@@ -1257,7 +1257,7 @@ expressions `t` and `s` are definitionally equal or *defeq* (at the current
 transparency) if their normal forms (at the current transparency) are equal.
 
 --#--
-前述したように、定義上の等しさは計算においての同値です。2つの式 `t` と `s` は（現在の透過度において）正規形が等しい場合、定義上等しい、もしくは **defeq** となります。
+前述したように、定義上の等しさは計算においての同値です。2つの式 `t` と `s` は（現在の透過度において）正規形が等しい場合、 definitionally equal 、もしくは **defeq** となります。
 
 --#--
 To check whether two expressions are defeq, use `Lean.Meta.isDefEq` with type
@@ -2049,8 +2049,8 @@ Notice that changing the type of the metavariable from `Nat` to, for example, `S
   **a)** `Bool → Bool` 型の `fun x => x`
   **b)** `Bool` 型の `(fun x => x) ((true && false) || true)`
   **c)** `Nat` 型の `800 + 2`
-7. [**計算**] `Expr.lit (Lean.Literal.natVal 1)` で作られた `1` と `Expr.app (Expr.const ``Nat.succ []) (Expr.const ``Nat.zero [])` で作られた式が定義上等しいことを示してください。
-8. [**計算**] 以下の式が定義上等しいかどうか判定してください。もし `Lean.Meta.isDefEq` が成功し、メタ変数の割り当てを導くなら、その割当も書き下してください。
+7. [**計算**] `Expr.lit (Lean.Literal.natVal 1)` で作られた `1` と `Expr.app (Expr.const ``Nat.succ []) (Expr.const ``Nat.zero [])` で作られた式が definitionally equal ことを示してください。
+8. [**計算**] 以下の式が definitionally equal かどうか判定してください。もし `Lean.Meta.isDefEq` が成功し、メタ変数の割り当てを導くなら、その割当も書き下してください。
   **a)** `5 =?= (fun x => 5) ((fun y : Nat → Nat => y) (fun z : Nat => z))`
   **b)** `2 + 1 =?= 1 + 2`
   **c)** `?a =?= 2`、ここで `?a` は `String` 型
@@ -2133,7 +2133,7 @@ Notice that changing the type of the metavariable from `Nat` to, for example, `S
 15. [**Backtracking**] Check that the expressions `?a + Int` and `"hi" + ?b` are definitionally equal with `isDefEq` (make sure to use the proper types or `Option.none` for the types of your metavariables!).
 Use `saveState` and `restoreState` to revert metavariable assignments.
 --#--
-15. [**バックトラッキング**] `isDefEq` を使用して `?a + Int` と `"hi" + ?b` が定義上等しいことをチェックしてください（メタ変数の型には適切な型、または `Option.none` を使用してください！）。メタ変数の割り当てを戻すには、`saveState` と `restoreState` を使用してください。
+15. [**バックトラッキング**] `isDefEq` を使用して `?a + Int` と `"hi" + ?b` が definitionally equal ことをチェックしてください（メタ変数の型には適切な型、または `Option.none` を使用してください！）。メタ変数の割り当てを戻すには、`saveState` と `restoreState` を使用してください。
 
 [^fn1]: 原文のリンクは「メタ変数の種（#metavariable-kinds）」の節へのリンクでしたが、該当する節が無くリンクが切れていたため、種について取り上げていた節にリンクを張るようにしています。
 -/
